@@ -1,16 +1,24 @@
-<script setup lang="ts">
-import { ref } from "vue";
+<script setup>
+import { ref, computed } from "vue";
+import Home from "./pages/Counter.vue";
+import NotFound from "./pages/NotFound.vue";
 
-const count = ref(0);
+const routes = {
+  "/": Home,
+};
+
+const currentPath = ref(window.location.hash);
+
+window.addEventListener("hashchange", () => {
+  currentPath.value = window.location.hash;
+});
+
+const currentView = computed(() => {
+  return routes[currentPath.value.slice(1) || "/"] || NotFound;
+});
 </script>
 
 <template>
-  <div>
-    <h3>This current count is...</h3>
-    <h1>{{ count }}</h1>
-    <div>
-      <button @click="count++">+</button>
-      <button @click="count--">-</button>
-    </div>
-  </div>
+  <div><a href="#/">Counter</a></div>
+  <component :is="currentView" />
 </template>
